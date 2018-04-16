@@ -1,0 +1,72 @@
+<!DOCTYPE doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+            <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+                <!-- Bootstrap CSS -->
+                <link crossorigin="anonymous" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" rel="stylesheet">
+                    <title>
+                        AshFashion商城
+                    </title>
+                </link>
+            </meta>
+        </meta>
+        <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
+        </script>
+        <script >
+            function getQueryVariable(variable)
+            {
+                var query = window.location.search.substring(1);
+                var vars = query.split("&");
+                for (var i=0;i<vars.length;i++) {
+                    var pair = vars[i].split("=");
+                    if(pair[0] == variable){return pair[1];}
+                }
+                return("请登录");
+            }
+        </script>
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script crossorigin="anonymous" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js">
+        </script>
+        <script crossorigin="anonymous" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js">
+        </script>
+    </head>
+    <body class="bg-warning">
+        <div>
+            <nav class="navbar navbar-default" role="navigation">
+                <a class="navbar-header" href="#">
+                    <img alt="Responsive image" src="../Image/A_logo.jpg" style="">
+                    </img>
+                </a>
+                <div style="margin-top: 1%;">
+                    <!-- <form class="navbar-form navbar-left" role="search">
+                        <div class="form-group">
+                            <input class="form-control" placeholder="Search" type="text">
+                            </input>
+                        </div>
+                        <button class="btn btn-default" type="submit">
+                            提交按钮
+                        </button>
+                    </form> -->
+                    <ul class="nav nav-tabs" >
+                      <li style="margin-left: 3%;"><a class="navbar-brand" href="#">外套</a></li>
+                      <li style="margin-left: 3%;"><a class="navbar-brand" href="#">上衣</a></li>
+                      <li style="margin-left: 3%;"><a class="navbar-brand" href="#">裤装</a></li>
+                      <li style="margin-left: 3%;"><a class="navbar-brand" href="#">鞋靴</a></li>
+                      <li style="margin-left: 3%;"><a class="navbar-brand" href="#">配件</a></li>
+                      <li style="margin-left: 3%;"><a class="navbar-brand" href="#">个人中心</a></li>
+                      <span style="margin-left: 13%;margin-top: 1.1%;" class="glyphicon glyphicon-user"> 
+                        <a href="#">
+                        <script>
+                            document.write(getQueryVariable("account"));
+                        </script>
+                        </a>
+                        </span>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </body>
+</html>
