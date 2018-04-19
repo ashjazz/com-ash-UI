@@ -7,7 +7,7 @@
                 <!-- Bootstrap CSS -->
                 <link crossorigin="anonymous" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" rel="stylesheet">
                     <title>
-                        请注册!
+                        用户注册
                     </title>
                 </link>
             </meta>
@@ -18,7 +18,7 @@
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
         <script crossorigin="anonymous" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js">
         </script>
-        <script crossorigin="anonymous" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js">
+        <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         </script>
     </head>
     <body class="bg-warning">
@@ -30,23 +30,43 @@
                 <img alt="Responsive image" class="center-block img-rounded" src="../Image/A.jpg" style="margin-top: 3%;">
                 </img>
             </div>
-            <div style="margin-top: 5%;margin-left: 34%;">
+            <div style="margin-top: 2%;margin-left: 38%;">
                 <form class="form-horizontal">
                     <div class="form-group">
-                        <label class="col-sm-2 control-label" for="inputEmail3">
-                            账号
+                        <label class="col-sm-2" for="inputEmail3">
+                            <h3>用户名</h3>
                         </label>
                         <div class="col-sm-10">
-                            <input class="form-control" id="account" placeholder="Email/Phonenum" style="width: 150px;" type="">
+                            <input class="form-control" id="account" placeholder="Email/Phonenum" style="margin-left: 3%; margin-top: 2%; width: 150px;" type="">
                             </input>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label" for="inputPassword3">
-                            密码
+                        <label class="col-sm-2" for="inputEmail3">
+                            <h3>用户昵称</h3>
                         </label>
                         <div class="col-sm-10">
-                            <input class="form-control" id="password" placeholder="Password" style="width: 150px" type="password">
+                            <input class="form-control" id="nickname" placeholder="nickname" style="margin-left: 3%; margin-top: 2%; width: 150px;" type="">
+                            </input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2" for="inputPassword3">
+                            <h3>密码</h3>
+                        </label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="password" placeholder="Password" style="margin-left: 3%; 
+                            margin-top: 2%; width: 150px" type="password">
+                            </input>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2" for="inputPassword3">
+                            <h3>确认密码</h3>
+                        </label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="password_confirm" placeholder="password_confirm" style="margin-left: 3%; 
+                            margin-top: 2%; width: 150px" type="password">
                             </input>
                         </div>
                     </div>
@@ -57,28 +77,34 @@
                                     $("#login_in").click(function(){
                                         window.event.returnValue=false;
                                         // 调用登录接口
-                                        if ($("#password").val() == '' || $("#account").val() == '') {
-                                            alert("请输入账号及密码！");
+                                        if ($("#account").val() == '' || $("#nickname").val() == '' || 
+                                            $("#password").val() == ''|| $("#password_confirm").val() == ''){
+                                            alert("请输入正确信息！");
                                             location.reload();
                                         }
+                                        if ($("#password").val() != $("#password_confirm").val()){
+                                            alert("两次密码输入不一致！");
+                                            location.reload();
+                                        }
+                                        // 请求注册接口
                                         $.get("http://192.168.64.129:8001/test?account="+$("#account").val()+
                                             "&password="+$("#password").val(),function(data,status)
                                         {
                                             data = JSON.parse(data);
                                             login_status = data['status'];
                                             if (login_status == 'success'){
-                                                alert("登陆成功！");
+                                                alert("注册成功！");
                                                 window.location.href='file:///C:/Users/admin/com-ash-UI/buyer/buyer_home.html?account='+
                                                     $("#account").val();
                                             }else {
-                                                alert("登录失败！");
+                                                alert("注册失败！");
                                             }
                                         });
                                     });
                                 });
                             </script>
-                            <button id="login_in" class="btn btn-default" type="submit">
-                                登录
+                            <button class="btn btn-default" id="login_in" type="submit">
+                                提交
                             </button>
                         </div>
                     </div>
