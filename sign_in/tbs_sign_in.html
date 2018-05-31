@@ -61,15 +61,33 @@
                                             alert("请输入账号及密码！");
                                             location.reload();
                                         }
-                                        $.get("http://192.168.64.129:8001/test?account="+$("#account").val()+
-                                            "&password="+$("#password").val(),function(data,status)
-                                        {
+                                        // get请求接口
+                                        // $.get("http://192.168.64.129:8001/sign_in?mobile_phone="+$("#account").val()+
+                                        //     "&password="+$("#password").val(),function(data,status)
+                                        // {
+                                        //     data = JSON.parse(data);
+                                        //     login_status = data['status'];
+                                        //     if (login_status == 'success'){
+                                        //         alert("登陆成功！");
+                                        //         window.location.href='file:///C:/Users/admin/com-ash-UI/buyer/buyer_home.html?account='+
+                                        //             $("#account").val();
+                                        //     }else {
+                                        //         alert("登录失败！");
+                                        //     }
+                                        // });
+                                        
+                                        // post请求接口
+                                        $.post("http://192.168.64.129:8001/sign_in",JSON.stringify({
+                                                mobile_phone:$("#account").val(),
+                                                password:$("#password").val()
+                                            }),
+                                            function(data,status){
                                             data = JSON.parse(data);
-                                            login_status = data['status'];
+                                            login_status = data['original']['status'];
                                             if (login_status == 'success'){
                                                 alert("登陆成功！");
                                                 window.location.href='file:///C:/Users/admin/com-ash-UI/buyer/buyer_home.html?account='+
-                                                    $("#account").val();
+                                                    $("#account").val()+'&access_token='+data['original']['access_token'];
                                             }else {
                                                 alert("登录失败！");
                                             }
