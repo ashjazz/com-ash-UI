@@ -29,6 +29,54 @@
             // if (getQueryVariable('uid') == '请登录'){
             //     window.location.href='file:///C:/Users/admin/com-ash-UI/sign_in/tbs_sign_in.html'
             // }
+
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            var uid = "";
+            var access_token = "";
+            for (var i=0;i<vars.length;i++) {
+                var pair = vars[i].split("=");
+                if(pair[0] == 'uid'){uid = pair[1];}
+                if(pair[0] == 'access_token'){access_token = pair[1];}
+            }
+            function publish_goods()
+            {
+                product_name = $("#product_name").val();
+                product_brandname_e = $("#product_brandname_e").val();
+                goods_description = $("#goods_description").val();
+                product_desc = $("#product_desc").val();
+                price = $("#price").val();
+                goods_stock = $("#goods_stock").val();
+                goods_price = $("#goods_price").val();
+                goods_type = $('input[name="goods_type"]:checked').val();
+                product_cover_image = $("#product_cover_image").val();
+                product_cover_image = "../Image/"+product_cover_image.split("\\")[product_cover_image.split("\\").length-1];
+                $(document).ready(function(){
+                    $.post("http://192.168.64.129:8001/push_goods",JSON.stringify({
+                            uid:uid,
+                            access_token:access_token,
+                            price:price,
+                            product_brandname_e:product_brandname_e,
+                            product_name:product_name,
+                            product_cover_image:product_cover_image,
+                            goods_description:goods_description,
+                            product_desc:product_desc,
+                            goods_stock:goods_stock,
+                            goods_price:goods_price,
+                            goods_type:goods_type
+                        }),
+                        function(data,status){
+                            data = JSON.parse(data);
+                            if (data['original']['gid']) {
+                                alert("操作成功！");
+                                location.reload();
+                            } else {
+                                alert(data['original']['msg']);
+                                location.reload();
+                            }
+                    });
+                });
+            }
         </script>
         <style>
             #section1,#section2{
@@ -55,25 +103,25 @@
                 </a>
                 <div style="margin-top: 1%;">
                     <ul class="nav nav-tabs">
-                        <li style="margin-left: 3%;">
+                        <li class="active" style="margin-left: 3%;">
                             <a class="navbar-brand" href="#">
                                 发布商品
                             </a>
                         </li>
                         <li style="margin-left: 3%;">
-                            <a class="navbar-brand" href="#">
+                            <a class="navbar-brand" href="javascript:location.href='file:///C:/Users/admin/com-ash-UI/seller/seller_trade_list.html?uid=' + uid + '&access_token=' + access_token">
                                 订单列表
                             </a>
                         </li>
                         <li style="margin-left: 3%;">
-                            <a class="navbar-brand" href="#">
+                            <a class="navbar-brand" href="javascript:location.href='file:///C:/Users/admin/com-ash-UI/seller/seller_refund_list.html?uid=' + uid + '&access_token=' + access_token">
                                 退款列表
                             </a>
                         </li>
                         <span class="glyphicon glyphicon-user" style="margin-left: 28%;margin-top: 1.1%;">
                             <a href="#">
                                 <script>
-                                    document.write(getQueryVariable("account"));
+                                    document.write(decodeURI(decodeURI((getQueryVariable("uid")))));
                                 </script>
                             </a>
                         </span>
@@ -222,7 +270,7 @@
                             <!-- 发布商品按钮 -->
                             <div class="form-group">
                                 <div class="col-sm-offset-3 col-sm-6" style="margin-top: 3.5%; width: 200px">
-                                    <button class="btn btn-default" style="width: 200px" id="login_in" type="submit">
+                                    <button class="btn btn-default" style="width: 200px" id="push_goods" type="button" onclick="publish_goods()">
                                         <font color="#000000" size="4">确认发布</font>
                                     </button>
                                 </div>
