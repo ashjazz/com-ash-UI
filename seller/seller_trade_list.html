@@ -1,0 +1,441 @@
+<!DOCTYPE doctype html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+            <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+                <!-- Bootstrap CSS -->
+                <link crossorigin="anonymous" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" rel="stylesheet">
+                    <title>
+                        商家订单列表
+                    </title>
+                </link>
+            </meta>
+        </meta>
+        <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
+        </script>
+        <script defer="true">
+            function getQueryVariable(variable)
+            {
+                var query = window.location.search.substring(1);
+                var vars = query.split("&");
+                for (var i=0;i<vars.length;i++) {
+                    var pair = vars[i].split("=");
+                    if(pair[0] == variable){return pair[1];}
+                }
+                return("请登录");
+            }
+            // 用于控制用户是否登录
+            // if (getQueryVariable('uid') == '请登录'){
+            //     window.location.href='file:///C:/Users/admin/com-ash-UI/sign_in/tbs_sign_in.html'
+            // }
+
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            var start = 0;
+            var count = 10;
+            var uid = "";
+            var access_token = "";
+            for (var i=0;i<vars.length;i++) {
+                var pair = vars[i].split("=");
+                if(pair[0] == 'uid'){uid = pair[1];}
+                if(pair[0] == 'access_token'){access_token = pair[1];}
+                if(pair[0] == 'start'){start = pair[1];}
+                if(pair[0] == 'count'){count = pair[1];}
+            }
+            
+
+            // 页面加载后就进行post请求
+            $(document).ready(function(){
+                $.post("http://192.168.64.129:8001/get_trade_list",JSON.stringify({
+                        uid:uid,
+                        access_token:access_token,
+                        start:start,
+                        count:count
+                    }),
+                    function(data,status){
+                        data = JSON.parse(data);
+                        trade_list = data['original']['trade_list'];
+                        for(var i=0;i<trade_list.length;i++) {
+                            each_trade = trade_list[i];
+                            trade_info = document.getElementById('trade_'+i);
+                            trade_info.style = "";
+                            trade_no = document.getElementById('trade_no_'+i);
+                            trade_no.innerHTML = each_trade['trade_no'];
+                            buyer_nickname = document.getElementById('buyer_nickname_'+i);
+                            buyer_nickname.innerHTML = each_trade['buyer_nickname'];
+                            seller_nickname = document.getElementById('seller_nickname_'+i);
+                            seller_nickname.innerHTML = each_trade['seller_nickname'];
+                            product_name = document.getElementById('product_name_'+i);
+                            product_name.innerHTML = each_trade['product_name'];
+                            trade_price = document.getElementById('trade_price_'+i);
+                            trade_price.innerHTML = each_trade['trade_price'];
+                            trade_status = document.getElementById('trade_status_'+i);
+                            trade_status.innerHTML = each_trade['trade_status'];
+                            trade_active = document.getElementById('trade_active_'+i);
+                            switch(parseInt(each_trade['trade_status'])) {
+                                case 2:
+                                    trade_status.innerHTML = "待买家付款";
+                                    // trade_active.style = "";
+                                    // trade_active.innerHTML = "付款";
+                                    break;
+                                case 3:
+                                    trade_status.innerHTML = "待商家发货";
+                                    trade_active.style = "";
+                                    trade_active.innerHTML = "发货";
+                                    break;
+                                case 4:
+                                    trade_status.innerHTML = "待买家签收";
+                                    // trade_active.style = "";
+                                    // trade_active.innerHTML = "签收";
+                                    break;
+                                case 5:
+                                    trade_status.innerHTML = "交易成功";
+                                    // trade_active.style = "";
+                                    // trade_active.innerHTML = "申请退款";
+                                    break;
+                                case 9:
+                                    trade_status.innerHTML = "买家取消订单";
+                                    // trade_active.style = "";
+                                    // trade_active.innerHTML = "";
+                                    break;
+                                case 10:
+                                    trade_status.innerHTML = "退款成功";
+                                    // trade_active.style = "";
+                                    // trade_active.innerHTML = "";
+                                    break;
+                            }
+                        }
+                });
+            });
+            // 点击上一页
+            $(document).ready(function(){
+                $("#pre").click(function(){
+                    window.event.returnValue=false;
+                    if (start <= 10) {
+                        var next_start = 0;
+                    } else {
+                        var next_start=parseInt(start)-10;
+                    }
+                    window.location.href='file:///C:/Users/admin/com-ash-UI/seller/seller_trade_list.html?start='+ next_start + "&count=" + count + "&uid=" + uid + "&access_token=" + access_token;
+                });
+            });
+            // 点击下一页
+            $(document).ready(function(){
+                $("#next").click(function(){
+                    window.event.returnValue=false;
+                    var next_start = parseInt(start) + 10;
+                    window.location.href='file:///C:/Users/admin/com-ash-UI/seller/seller_trade_list.html?start='+ next_start + "&count=" + count + "&uid=" + uid + "&access_token=" + access_token;
+                });
+            });
+            // 点击发货
+            function delivery(i){
+                trade_status = document.getElementById('trade_status_' + i);
+                trade_no = document.getElementById('trade_no_' + i);
+                $(document).ready(function(){
+                    $.post("http://192.168.64.129:8001/trade_deliver_goods",JSON.stringify({
+                            trade_no:trade_no.innerHTML
+                        }),
+                        function(data,status){
+                            data = JSON.parse(data);
+                            if (data['original']['msg'] == "发货成功!") {
+                                alert("操作成功！");
+                                location.reload();
+                            } else {
+                                alert(data['original']['msg']);
+                                location.reload();
+                            }
+                    });
+                });
+            }
+
+        </script>
+        <style>
+            #section1,#section2{
+        　　position: relative;
+        　　top:-0.96rem;//下移导航的高度（导航固定在顶部）
+        　　display: block;
+        　　height: 0;
+        　　overflow: hidden;
+        }
+        </style>
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script crossorigin="anonymous" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js">
+        </script>
+        <script crossorigin="anonymous" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js">
+        </script>
+    </head>
+    <body class="bg-warning">
+        <div>
+            <nav class="navbar navbar-default" role="navigation">
+                <a class="navbar-header" href="#">
+                    <img alt="Responsive image" src="../Image/A_logo.jpg" style="">
+                    </img>
+                </a>
+                <div style="margin-top: 1%;">
+                    <ul class="nav nav-tabs">
+                        <li style="margin-left: 3%;">
+                            <a class="navbar-brand" href="javascript:location.href='file:///C:/Users/admin/com-ash-UI/seller/publish_goods.html?uid=' + uid + '&access_token=' + access_token">
+                                发布商品
+                            </a>
+                        </li>
+                        <li class="active" style="margin-left: 3%;">
+                            <a class="navbar-brand" href="#">
+                                订单列表
+                            </a>
+                        </li>
+                        <li style="margin-left: 3%;">
+                            <a class="navbar-brand" href="javascript:location.href='file:///C:/Users/admin/com-ash-UI/seller/seller_refund_list.html?uid=' + uid + '&access_token=' + access_token">
+                                退款列表
+                            </a>
+                        </li>
+                        <span class="glyphicon glyphicon-user" style="margin-left: 28%;margin-top: 1.1%;">
+                            <a href="#">
+                                <script>
+                                    document.write(decodeURI(decodeURI((getQueryVariable("seller_nickname")))));
+                                </script>
+                            </a>
+                        </span>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="container" style="margin-top: 3%; margin-right: 10%;">
+            <div class="row">
+                <div class="col-xs-9">
+                    <h2 id="section1">
+                        <font color="#87CEFA">
+                            订单列表
+                        </font>
+                    </h2>
+                    <div class="table-responsive">
+                        <table class="table table-hover" style="margin-top: 3%;">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        订单号
+                                    </th>
+                                    <th>
+                                        买家昵称
+                                    </th>
+                                    <th>
+                                        商家昵称
+                                    </th>
+                                    <th>
+                                        商品名称
+                                    </th>
+                                    <th>
+                                        订单价格
+                                    </th>
+                                    <th>
+                                        订单状态
+                                    </th>
+                                    <th>
+                                        操作
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr id="trade_0" style="display: none;">
+                                    <td id="trade_no_0">
+                                    </td>
+                                    <td id="buyer_nickname_0">
+                                    </td>
+                                    <td id="seller_nickname_0">
+                                    </td>
+                                    <td id="product_name_0">
+                                    </td>
+                                    <td id="trade_price_0">
+                                    </td>
+                                    <td id="trade_status_0">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="trade_active_0" style="display: none;" type="button" onclick="delivery(this.id.charAt(this.id.length-1))">
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr id="trade_1" style="display: none;">
+                                    <td id="trade_no_1">
+                                    </td>
+                                    <td id="buyer_nickname_1">
+                                    </td>
+                                    <td id="seller_nickname_1">
+                                    </td>
+                                    <td id="product_name_1">
+                                    </td>
+                                    <td id="trade_price_1">
+                                    </td>
+                                    <td id="trade_status_1">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="trade_active_1" style="display: none;" type="button" onclick="delivery(this.id.charAt(this.id.length-1))">
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr id="trade_2" style="display: none;">
+                                    <td id="trade_no_2">
+                                    </td>
+                                    <td id="buyer_nickname_2">
+                                    </td>
+                                    <td id="seller_nickname_2">
+                                    </td>
+                                    <td id="product_name_2">
+                                    </td>
+                                    <td id="trade_price_2">
+                                    </td>
+                                    <td id="trade_status_2">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="trade_active_2" style="display: none;" type="button" onclick="delivery(this.id.charAt(this.id.length-1))">
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr id="trade_3" style="display: none;">
+                                    <td id="trade_no_3">
+                                    </td>
+                                    <td id="buyer_nickname_3">
+                                    </td>
+                                    <td id="seller_nickname_3">
+                                    </td>
+                                    <td id="product_name_3">
+                                    </td>
+                                    <td id="trade_price_3">
+                                    </td>
+                                    <td id="trade_status_3">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="trade_active_3" style="display: none;" type="button" onclick="delivery(this.id.charAt(this.id.length-1))">
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr id="trade_4" style="display: none;">
+                                    <td id="trade_no_4">
+                                    </td>
+                                    <td id="buyer_nickname_4">
+                                    </td>
+                                    <td id="seller_nickname_4">
+                                    </td>
+                                    <td id="product_name_4">
+                                    </td>
+                                    <td id="trade_price_4">
+                                    </td>
+                                    <td id="trade_status_4">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="trade_active_4" style="display: none;" type="button" onclick="delivery(this.id.charAt(this.id.length-1))">
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr id="trade_5" style="display: none;">
+                                    <td id="trade_no_5">
+                                    </td>
+                                    <td id="buyer_nickname_5">
+                                    </td>
+                                    <td id="seller_nickname_5">
+                                    </td>
+                                    <td id="product_name_5">
+                                    </td>
+                                    <td id="trade_price_5">
+                                    </td>
+                                    <td id="trade_status_5">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="trade_active_5" style="display: none;" type="button" onclick="delivery(this.id.charAt(this.id.length-1))">
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr id="trade_6" style="display: none;">
+                                    <td id="trade_no_6">
+                                    </td>
+                                    <td id="buyer_nickname_6">
+                                    </td>
+                                    <td id="seller_nickname_6">
+                                    </td>
+                                    <td id="product_name_6">
+                                    </td>
+                                    <td id="trade_price_6">
+                                    </td>
+                                    <td id="trade_status_6">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="trade_active_6" style="display: none;" type="button" onclick="delivery(this.id.charAt(this.id.length-1))">
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr id="trade_7" style="display: none;">
+                                    <td id="trade_no_7">
+                                    </td>
+                                    <td id="buyer_nickname_7">
+                                    </td>
+                                    <td id="seller_nickname_7">
+                                    </td>
+                                    <td id="product_name_7">
+                                    </td>
+                                    <td id="trade_price_7">
+                                    </td>
+                                    <td id="trade_status_7">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="trade_active_7" style="display: none;" type="button" onclick="delivery(this.id.charAt(this.id.length-1))">
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr id="trade_8" style="display: none;">
+                                    <td id="trade_no_8">
+                                    </td>
+                                    <td id="buyer_nickname_8">
+                                    </td>
+                                    <td id="seller_nickname_8">
+                                    </td>
+                                    <td id="product_name_8">
+                                    </td>
+                                    <td id="trade_price_8">
+                                    </td>
+                                    <td id="trade_status_8">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="trade_active_8" style="display: none;" type="button" onclick="delivery(this.id.charAt(this.id.length-1))">
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr id="trade_9" style="display: none;">
+                                    <td id="trade_no_9">
+                                    </td>
+                                    <td id="buyer_nickname_9">
+                                    </td>
+                                    <td id="seller_nickname_9">
+                                    </td>
+                                    <td id="product_name_9">
+                                    </td>
+                                    <td id="trade_price_9">
+                                    </td>
+                                    <td id="trade_status_9">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary" id="trade_active_9" style="display: none;" type="button" onclick="delivery(this.id.charAt(this.id.length-1))">
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style=" margin-left: 70%;">
+            <button class="btn btn-primary" id="pre" style="display: none;" type="button">
+                上一页
+            </button>
+            <button class="btn btn-primary" id="next" type="button">
+                下一页
+            </button>
+        </div>
+    </body>
+    <script type="text/javascript">
+        if (start != 0) {
+            pre = document.getElementById('pre');
+            pre.style = "";
+        }
+    </script>
+</html>

@@ -35,7 +35,7 @@
                 $.post("http://192.168.64.129:8001/goods_list",JSON.stringify({
                         start:start,
                         count:count,
-                        goods_type:1
+                        goods_type:2
                     }),
                     function(data,status){
                         data = JSON.parse(data);
@@ -122,13 +122,13 @@
                 </a>
                 <div style="margin-top: 1%;">
                     <ul class="nav nav-tabs">
-                        <li class="active" style="margin-left: 3%;">
-                            <a class="navbar-brand" href="#">
+                        <li style="margin-left: 3%;">
+                            <a class="navbar-brand" href="javascript:location.href='file:///C:/Users/admin/com-ash-UI/user_center/coat_list.html?uid=' + uid + '&access_token=' + access_token">
                                 外套
                             </a>
                         </li>
-                        <li style="margin-left: 3%;">
-                            <a class="navbar-brand" href="javascript:location.href='file:///C:/Users/admin/com-ash-UI/user_center/shirt_list.html?uid=' + uid + '&access_token=' + access_token">
+                        <li class="active" style="margin-left: 3%;">
+                            <a class="navbar-brand" href="#">
                                 上衣
                             </a>
                         </li>
